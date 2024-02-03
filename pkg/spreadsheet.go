@@ -23,7 +23,7 @@ func AccessSpreadsheet(ctx context.Context, client *http.Client) (*sheets.Servic
 // GetSpreadsheetMap Get a map with key: datetime+sport and value: SportingEvent struct of all the events
 // on all months on the spreadsheet.
 func GetSpreadsheetMap(sheetService *sheets.Service, currentTime time.Time) map[string]SportingEvent {
-	nameToEmailMap := loadNameToEmailMap(sheetService, SpreadsheetID)
+	nameToEmailMap := loadNameToEmailMap(sheetService, GetSpreadsheetID())
 
 	// This list corresponds to the sheet IDs (tabs) in the spreadsheet.
 	monthList := []string{
@@ -42,7 +42,7 @@ func GetSpreadsheetMap(sheetService *sheets.Service, currentTime time.Time) map[
 	spreadsheetFutureEvents := make(map[string]SportingEvent)
 
 	for _, month := range monthList {
-		monthEvents := LoadMonthAssignments(sheetService, SpreadsheetID, month, nameToEmailMap)
+		monthEvents := LoadMonthAssignments(sheetService, GetSpreadsheetID(), month, nameToEmailMap)
 		for _, event := range monthEvents {
 			if event.Datetime.After(currentTime) {
 				spreadsheetFutureEvents[event.GetKey()] = event
