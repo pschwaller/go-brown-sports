@@ -98,6 +98,4 @@ directory.
 
 # Bugs
 
-* When program is run while an event is in progress, the code
-thinks that the event is missing from the spreadsheet and deletes it
-from the calendar.
+None identified at this time.

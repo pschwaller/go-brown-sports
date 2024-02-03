@@ -9,6 +9,7 @@ import (
 	"google.golang.org/api/option"
 	"log"
 	"schwaller.org/go-brown-sports/pkg"
+	"time"
 )
 
 func main() {
@@ -22,19 +23,24 @@ func main() {
 	// We're going to create a series of maps using datetime+sport as the key, and
 	// a SportingEvent struct as the value.
 
+	// Capture the current time and pass it to both the GetCalendarMaps and
+	// GetSpreadsheetMaps.  This eliminates a race condition when the
+	// program is run right around an event start time.
+	currentTime := time.Now()
+
 	// Access the calendar and generate the maps
 	calendarService, err := calendar.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Calendar client: %v", err)
 	}
-	calendarFutureEvents, calendarFutureEventIds := pkg.GetCalendarMaps(calendarService)
+	calendarFutureEvents, calendarFutureEventIds := pkg.GetCalendarMaps(calendarService, currentTime)
 
 	// Access the spreadsheet and generate the map
 	sheetService, err := pkg.AccessSpreadsheet(ctx, client)
 	if err != nil {
 		log.Fatalf("Unable to access spreadsheet: %v", err)
 	}
-	spreadsheetFutureEvents := pkg.GetSpreadsheetMap(sheetService)
+	spreadsheetFutureEvents := pkg.GetSpreadsheetMap(sheetService, currentTime)
 
 	// Now that we have all the maps, let's sync the spreadsheet info into the calendar.
 	synchronizeCalendar(spreadsheetFutureEvents, calendarFutureEvents, calendarFutureEventIds, calendarService)
