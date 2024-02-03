@@ -95,3 +95,9 @@ to create the file.
 
 After OAuth2 flows, the program will create a token.json file in the current 
 directory.
+
+# Bugs
+
+* When program is run while an event is in progress, the code
+thinks that the event is missing from the spreadsheet and deletes it
+from the calendar.

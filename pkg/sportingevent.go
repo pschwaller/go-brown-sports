@@ -27,6 +27,7 @@ func (event SportingEvent) GetKey() string {
 }
 
 func (event SportingEvent) IsMostlyEqual(event2 SportingEvent) bool {
+	// TODO using reflect() is _probably_ unnecessary here.  Need to test using == instead.
 	return event.Datetime.Equal(event2.Datetime) && event.Sport == event2.Sport && reflect.DeepEqual(event.Roles, event2.Roles)
 }
 
