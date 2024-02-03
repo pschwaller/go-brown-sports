@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-
 	// Set up access to the Google APIs we're using
 	ctx, client, err := pkg.AccessGoogleClient()
 	if err != nil {
@@ -33,6 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to retrieve Calendar client: %v", err)
 	}
+
 	calendarFutureEvents, calendarFutureEventIds := pkg.GetCalendarMaps(calendarService, currentTime)
 
 	// Access the spreadsheet and generate the map
@@ -40,13 +40,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to access spreadsheet: %v", err)
 	}
+
 	spreadsheetFutureEvents := pkg.GetSpreadsheetMap(sheetService, currentTime)
 
 	// Now that we have all the maps, let's sync the spreadsheet info into the calendar.
 	synchronizeCalendar(spreadsheetFutureEvents, calendarFutureEvents, calendarFutureEventIds, calendarService)
 }
 
-func synchronizeCalendar(spreadsheetFutureEvents map[string]pkg.SportingEvent, calendarFutureEvents map[string]pkg.SportingEvent, calendarFutureEventIds map[string]string, calendarService *calendar.Service) {
+func synchronizeCalendar(
+	spreadsheetFutureEvents map[string]pkg.SportingEvent,
+	calendarFutureEvents map[string]pkg.SportingEvent,
+	calendarFutureEventIds map[string]string,
+	calendarService *calendar.Service) {
 	var err error
 
 	// Create sets.  This makes determining what's missing and extra simple and straightforward.
@@ -56,7 +61,8 @@ func synchronizeCalendar(spreadsheetFutureEvents map[string]pkg.SportingEvent, c
 	missingInCalendar := spreadsheetSet.Difference(calendarSet)
 	for key := range missingInCalendar.Iter() {
 		sportingEvent := spreadsheetFutureEvents[key.(string)]
-		err = pkg.CreateCalendarEvent(calendarService, pkg.CalendarId, sportingEvent)
+		err = pkg.CreateCalendarEvent(calendarService, pkg.CalendarID, sportingEvent)
+
 		if err != nil {
 			fmt.Printf("Error creating calendar event for %s: %v", key, err)
 		}
@@ -64,8 +70,9 @@ func synchronizeCalendar(spreadsheetFutureEvents map[string]pkg.SportingEvent, c
 
 	extraInCalendar := calendarSet.Difference(spreadsheetSet)
 	for key := range extraInCalendar.Iter() {
-		eventId := calendarFutureEventIds[key.(string)]
-		err = calendarService.Events.Delete(pkg.CalendarId, eventId).Do()
+		eventID := calendarFutureEventIds[key.(string)]
+		err = calendarService.Events.Delete(pkg.CalendarID, eventID).Do()
+
 		if err != nil {
 			fmt.Printf("Error deleting %s: %v", key.(string), err)
 		}
@@ -73,19 +80,25 @@ func synchronizeCalendar(spreadsheetFutureEvents map[string]pkg.SportingEvent, c
 
 	matchingKeys := calendarSet.Intersect(spreadsheetSet)
 	updateCount := 0
+
 	for key := range matchingKeys.Iter() {
 		keyString := key.(string)
 		if calendarFutureEvents[keyString].IsMostlyEqual(spreadsheetFutureEvents[keyString]) {
 			continue
 		}
 		// If we're here, there must have been a change.  Update the calendar entry.
-		eventId := calendarFutureEventIds[keyString]
-		err = pkg.UpdateCalendarEvent(calendarService, pkg.CalendarId, eventId, spreadsheetFutureEvents[keyString])
+		eventID := calendarFutureEventIds[keyString]
+		err = pkg.UpdateCalendarEvent(calendarService, pkg.CalendarID, eventID, spreadsheetFutureEvents[keyString])
+
 		if err != nil {
 			fmt.Printf("Error updating %s: %v", keyString, err)
 		}
-		updateCount += 1
+		updateCount++
 	}
 
-	fmt.Printf("Missing: %d, Extra: %d, Updated: %d\n", missingInCalendar.Cardinality(), extraInCalendar.Cardinality(), updateCount)
+	fmt.Printf(
+		"Missing: %d, Extra: %d, Updated: %d\n",
+		missingInCalendar.Cardinality(),
+		extraInCalendar.Cardinality(),
+		updateCount)
 }

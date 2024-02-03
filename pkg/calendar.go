@@ -30,19 +30,23 @@ func GetSportLocation(sport string) string {
 		"Men's Crew":                   "",
 	}
 	location := sportToLocation[sport]
+
 	return location
 }
 
 // GetCalendarMaps Get a map with key: datetime+sport and value: SportingEvent struct of all the future events
 // on the calendar.
-func GetCalendarMaps(calendarService *calendar.Service, currentTime time.Time) (map[string]SportingEvent, map[string]string) {
+func GetCalendarMaps(
+	calendarService *calendar.Service,
+	currentTime time.Time) (map[string]SportingEvent, map[string]string) {
 	// The Google APIs deal with times in specific string formats.
 	currentTimeString := time.Now().Format(time.RFC3339)
 
 	// Retrieve ALL of the future calendar events
 	var err error
-	events, err := calendarService.Events.List(CalendarId).ShowDeleted(false).
+	events, err := calendarService.Events.List(CalendarID).ShowDeleted(false).
 		SingleEvents(true).TimeMin(currentTimeString).OrderBy("startTime").Do()
+
 	if err != nil {
 		log.Fatalf("Unable to retrieve the events from the calendar: %v", err)
 	}
@@ -54,12 +58,8 @@ func GetCalendarMaps(calendarService *calendar.Service, currentTime time.Time) (
 	// straightforward at the small expense of extra memory.
 	calendarFutureEvents := make(map[string]SportingEvent)
 	calendarFutureEventIds := make(map[string]string)
-	for _, item := range events.Items {
-		date := item.Start.DateTime
-		if date == "" {
-			date = item.Start.Date
-		}
 
+	for _, item := range events.Items {
 		if !strings.Contains(item.Description, AutomationMarker) {
 			continue // We didn't create this entry... skip it.
 		}
@@ -75,20 +75,25 @@ func GetCalendarMaps(calendarService *calendar.Service, currentTime time.Time) (
 			calendarFutureEventIds[sportingEvent.GetKey()] = item.Id
 		}
 	}
+
 	return calendarFutureEvents, calendarFutureEventIds
 }
 
 func getSportingEventFromCalendarEvent(calendarEvent *calendar.Event) SportingEvent {
 	var sportingEvent SportingEvent
 
+	const minRoleSize = 2
+
 	sportingEvent.Sport = calendarEvent.Summary
 	description := strings.ReplaceAll(calendarEvent.Description, AutomationMarker, "")
+
 	for _, role := range strings.Split(description, "\n") {
 		// Calendar entries can have an extra blank line.  Let's suppress it.
-		if len(role) > 2 {
+		if len(role) > minRoleSize {
 			sportingEvent.Roles = append(sportingEvent.Roles, role)
 		}
 	}
+
 	eastern, _ := time.LoadLocation("America/New_York")
 	datetime, _ := time.ParseInLocation("2006-01-02T15:04:05-05:00", calendarEvent.Start.DateTime, eastern)
 
@@ -99,23 +104,34 @@ func getSportingEventFromCalendarEvent(calendarEvent *calendar.Event) SportingEv
 	return sportingEvent
 }
 
-func CreateCalendarEvent(calendarService *calendar.Service, calendarId string, sportingEvent SportingEvent) error {
+func CreateCalendarEvent(calendarService *calendar.Service, calendarID string, sportingEvent SportingEvent) error {
 	event := createCalendarEntryObject(sportingEvent)
+
 	var err error
-	event, err = calendarService.Events.Insert(calendarId, event).Do()
+
+	_, err = calendarService.Events.Insert(calendarID, event).Do()
 	if err != nil {
 		log.Fatalf("Unable to create event. %v\n", err)
 	}
+
 	return err
 }
 
-func UpdateCalendarEvent(calendarService *calendar.Service, calendarId string, eventId string, sportingEvent SportingEvent) error {
+func UpdateCalendarEvent(
+	calendarService *calendar.Service,
+	calendarID string,
+	eventID string,
+	sportingEvent SportingEvent) error {
 	event := createCalendarEntryObject(sportingEvent)
+
 	var err error
-	event, err = calendarService.Events.Update(calendarId, eventId, event).Do()
+
+	_, err = calendarService.Events.Update(calendarID, eventID, event).Do()
+
 	if err != nil {
 		log.Fatalf("Unable to update event. %v\n", err)
 	}
+
 	return err
 }
 
@@ -124,6 +140,7 @@ func createCalendarEntryObject(sportingEvent SportingEvent) *calendar.Event {
 	for _, role := range sportingEvent.Roles {
 		description += role + "\n"
 	}
+
 	description += AutomationMarker
 
 	startTime := sportingEvent.Datetime
@@ -141,10 +158,11 @@ func createCalendarEntryObject(sportingEvent SportingEvent) *calendar.Event {
 			TimeZone: "America/New_York",
 		},
 		// TODO add code to fill in the emails of people who opt-in to invites.
-		//Attendees: []*calendar.EventAttendee{
-		//	&calendar.EventAttendee{Email:"lpage@example.com"},
-		//	&calendar.EventAttendee{Email:"sbrin@example.com"},
-		//},
+		// Attendees: []*calendar.EventAttendee{
+		// 	&calendar.EventAttendee{Email:"lpage@example.com"},
+		// 	&calendar.EventAttendee{Email:"sbrin@example.com"},
+		// },
 	}
+
 	return event
 }
