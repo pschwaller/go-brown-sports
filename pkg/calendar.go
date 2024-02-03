@@ -44,7 +44,7 @@ func GetCalendarMaps(
 
 	// Retrieve ALL of the future calendar events
 	var err error
-	events, err := calendarService.Events.List(CalendarID).ShowDeleted(false).
+	events, err := calendarService.Events.List(GetCalendarID()).ShowDeleted(false).
 		SingleEvents(true).TimeMin(currentTimeString).OrderBy("startTime").Do()
 
 	if err != nil {

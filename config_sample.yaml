@@ -1,0 +1,9 @@
+# This file should be copied to config.yaml prior to use.
+
+# The calendar ID of the Google calendar we want to synchronize.
+# This can be found on the properties of the calendar.
+# For the primary calendar of a user, specify "primary".
+calendarId: "c_abcde012345678918ad84c070a681e61f8bd70d6c0c49c8193d82f9b26106619@group.calendar.google.com"
+
+# The Google spreadsheet ID.  This is contained within the URL of the spreadsheet when viewing as a user.
+spreadsheetId: "1j_abced0123456789q_SrWXmVTkCMDRpKKWkgfYiPa8"

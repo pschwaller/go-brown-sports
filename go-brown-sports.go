@@ -61,7 +61,7 @@ func synchronizeCalendar(
 	missingInCalendar := spreadsheetSet.Difference(calendarSet)
 	for key := range missingInCalendar.Iter() {
 		sportingEvent := spreadsheetFutureEvents[key.(string)]
-		err = pkg.CreateCalendarEvent(calendarService, pkg.CalendarID, sportingEvent)
+		err = pkg.CreateCalendarEvent(calendarService, pkg.GetCalendarID(), sportingEvent)
 
 		if err != nil {
 			fmt.Printf("Error creating calendar event for %s: %v", key, err)
@@ -71,7 +71,7 @@ func synchronizeCalendar(
 	extraInCalendar := calendarSet.Difference(spreadsheetSet)
 	for key := range extraInCalendar.Iter() {
 		eventID := calendarFutureEventIds[key.(string)]
-		err = calendarService.Events.Delete(pkg.CalendarID, eventID).Do()
+		err = calendarService.Events.Delete(pkg.GetCalendarID(), eventID).Do()
 
 		if err != nil {
 			fmt.Printf("Error deleting %s: %v", key.(string), err)
@@ -88,7 +88,7 @@ func synchronizeCalendar(
 		}
 		// If we're here, there must have been a change.  Update the calendar entry.
 		eventID := calendarFutureEventIds[keyString]
-		err = pkg.UpdateCalendarEvent(calendarService, pkg.CalendarID, eventID, spreadsheetFutureEvents[keyString])
+		err = pkg.UpdateCalendarEvent(calendarService, pkg.GetCalendarID(), eventID, spreadsheetFutureEvents[keyString])
 
 		if err != nil {
 			fmt.Printf("Error updating %s: %v", keyString, err)
