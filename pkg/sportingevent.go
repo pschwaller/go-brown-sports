@@ -15,10 +15,12 @@ type SportingEvent struct {
 
 func (event SportingEvent) Format() string {
 	text := ""
-	text = text + fmt.Sprintf("When: %s\nSport: %s\n", event.Datetime, event.Sport)
+	text += fmt.Sprintf("When: %s\nSport: %s\n", event.Datetime, event.Sport)
+
 	for _, role := range event.Roles {
 		text = text + role + "\n"
 	}
+
 	return text
 }
 
@@ -28,7 +30,9 @@ func (event SportingEvent) GetKey() string {
 
 func (event SportingEvent) IsMostlyEqual(event2 SportingEvent) bool {
 	// TODO using reflect() is _probably_ unnecessary here.  Need to test using == instead.
-	return event.Datetime.Equal(event2.Datetime) && event.Sport == event2.Sport && reflect.DeepEqual(event.Roles, event2.Roles)
+	return event.Datetime.Equal(event2.Datetime) &&
+		event.Sport == event2.Sport &&
+		reflect.DeepEqual(event.Roles, event2.Roles)
 }
 
 func GetKeysFromSportingEventMap(myMap map[string]SportingEvent) []interface{} {
@@ -36,5 +40,6 @@ func GetKeysFromSportingEventMap(myMap map[string]SportingEvent) []interface{} {
 	for k := range myMap {
 		keys = append(keys, k)
 	}
+
 	return keys
 }

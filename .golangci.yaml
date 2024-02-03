@@ -1,0 +1,122 @@
+linters:
+  # Enable all available linters.
+  # Default: false
+  enable-all: true
+  # Disable specific linter
+  # https://golangci-lint.run/usage/linters/#disabled-by-default
+  disable:
+  #  - asasalint
+  #  - asciicheck
+  #  - bidichk
+  #  - bodyclose
+  #  - containedctx
+  #  - contextcheck
+  #  - cyclop
+    - deadcode  # deprecated
+  #  - decorder
+    - depguard  # Need to investigate purpose of this.
+  #  - dogsled
+  #  - dupl
+  #  - dupword
+  #  - durationcheck
+  #  - errcheck
+  #  - errchkjson
+  #  - errname
+  #  - errorlint
+  #  - execinquery
+  #  - exhaustive
+    - exhaustivestruct # deprecated
+    - exhaustruct  # Should figure out how to keep this enabled, but override on a case-by-case basis
+  #  - exportloopref
+    - forbidigo
+  #  - forcetypeassert
+  # - funlen
+    - gci  # Need to figure out the purpose of this...
+  # - ginkgolinter
+  # - gocheckcompilerdirectives
+  # - gochecknoglobals
+  # - gochecknoinits
+  # - gochecksumtype
+  #  - gocognit
+  # - goconst
+    - gocritic  # Giving warnings about 3rd party packages
+  #  - gocyclo
+  #  - godot
+    - godox  # Warnings about TODO
+  #  - goerr113
+  #  - gofmt
+    - gofumpt  # What's the purpose of this?
+  #  - goheader
+    - goimports  # Not sure what this is trying to do...
+    - golint  # deprecated
+  #  - gomnd
+  #  - gomoddirectives
+  #  - gomodguard
+  #  - goprintffuncname
+  #  - gosec
+  ###  - gosimple
+  #  - gosmopolitan
+  #  - govet
+  #  - grouper
+    - ifshort  # deprecated
+  #  - importas
+  #  - inamedparam
+  #  - ineffassign
+  #  - interfacebloat
+    - interfacer  # deprecated
+  #  - ireturn
+  # - lll
+  # - loggercheck
+  #  - maintidx
+  #  - makezero
+    - maligned  # deprecated
+  #  - mirror
+  #  - misspell
+  #  - musttag
+  #  - nakedret
+  #  - nestif
+  #  - nilerr
+  #  - nilnil
+  #  - nlreturn
+  ##  - noctx
+   # - nolintlint
+   # - nonamedreturns
+    - nosnakecase  # deprecated
+  #  - nosprintfhostport
+  #  - paralleltest
+  #  - perfsprint
+  #  - prealloc
+  #  - predeclared
+  #  - promlinter
+  #  - protogetter
+  #  - reassign
+  #  - revive
+  #  - rowserrcheck
+    - scopelint  # deprecated
+  #  - sloglint
+  #  - spancheck
+  #  - sqlclosecheck
+  #  - staticcheck
+    - structcheck  # deprecated
+  #  - stylecheck
+  #  - tagalign
+  #  - tagliatelle
+  #  - tenv
+  #  - testableexamples
+  #  - testifylint
+  #  - testpackage
+  #  - thelper
+  #  - tparallel
+  #  - typecheck
+  #  - unconvert
+  #  - unparam
+  #  - unused
+  #  - usestdlibvars
+    - varcheck  # deprecated
+  #  - varnamelen
+  #  - wastedassign
+  #  - whitespace
+    - wrapcheck  # Looks at 3rd party packages only?
+  #  - wsl
+  #  - zerologlint
+ 
