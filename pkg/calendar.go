@@ -35,7 +35,7 @@ func GetSportLocation(sport string) string {
 
 // GetCalendarMaps Get a map with key: datetime+sport and value: SportingEvent struct of all the future events
 // on the calendar.
-func GetCalendarMaps(calendarService *calendar.Service) (map[string]SportingEvent, map[string]string) {
+func GetCalendarMaps(calendarService *calendar.Service, currentTime time.Time) (map[string]SportingEvent, map[string]string) {
 	// The Google APIs deal with times in specific string formats.
 	currentTimeString := time.Now().Format(time.RFC3339)
 
@@ -65,8 +65,15 @@ func GetCalendarMaps(calendarService *calendar.Service) (map[string]SportingEven
 		}
 
 		sportingEvent := getSportingEventFromCalendarEvent(item)
-		calendarFutureEvents[sportingEvent.GetKey()] = sportingEvent
-		calendarFutureEventIds[sportingEvent.GetKey()] = item.Id
+
+		// Although we specify TimeMin when getting the list of calendar events,
+		// this includes events with an _end time_ that if after the TimeMin.
+		// Need to check against the start time of the event to ensure calendar
+		// events aren't deleted when the event is in progress during a run.
+		if sportingEvent.Datetime.After(currentTime) {
+			calendarFutureEvents[sportingEvent.GetKey()] = sportingEvent
+			calendarFutureEventIds[sportingEvent.GetKey()] = item.Id
+		}
 	}
 	return calendarFutureEvents, calendarFutureEventIds
 }
