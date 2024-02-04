@@ -136,6 +136,8 @@ func UpdateCalendarEvent(
 }
 
 func createCalendarEntryObject(sportingEvent SportingEvent) *calendar.Event {
+	const durationInHours = 2
+
 	description := ""
 	for _, role := range sportingEvent.Roles {
 		description += role + "\n"
@@ -144,7 +146,7 @@ func createCalendarEntryObject(sportingEvent SportingEvent) *calendar.Event {
 	description += AutomationMarker
 
 	startTime := sportingEvent.Datetime
-	endTime := startTime.Add(time.Hour * time.Duration(2))
+	endTime := startTime.Add(time.Hour * time.Duration(durationInHours))
 	event := &calendar.Event{
 		Summary:     sportingEvent.Sport,
 		Location:    GetSportLocation(sportingEvent.Sport),
