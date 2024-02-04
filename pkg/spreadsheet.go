@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+// Specify the column number of our required columns.
+// If any changes are made to these, the requiredHeaders variable (see below) should also be updated.
+const dateColumnNumber = 0
+const timeColumnNumber = 1
+const sportColumnNumber = 2
+
 func AccessSpreadsheet(ctx context.Context, client *http.Client) (*sheets.Service, error) {
 	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
@@ -97,13 +103,13 @@ func buildSingleEvent(
 	requiredHeaders []string,
 	nameToEmailMap map[string]string,
 	missing map[string]int) SportingEvent {
-	dateString := event[0].(string)
-	timeString := event[1].(string)
+	dateString := event[dateColumnNumber].(string)
+	timeString := event[timeColumnNumber].(string)
 
 	sportingEvent := SportingEvent{}
 
 	sportingEvent.Datetime = resolveDatetime(dateString, timeString)
-	sportingEvent.Sport = event[2].(string)
+	sportingEvent.Sport = event[sportColumnNumber].(string)
 
 	if len(headers) != len(event) {
 		fmt.Printf("No MATCH: %s\n", event)
