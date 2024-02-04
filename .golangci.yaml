@@ -44,7 +44,7 @@ linters:
   #  - godot
     - godox  # Warnings about TODO
   #  - goerr113
-    - gofmt    # Need to check this
+  #  - gofmt
     - gofumpt  # What's the purpose of this?
   #  - goheader
     - goimports  # Not sure what this is trying to do...
