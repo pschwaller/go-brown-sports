@@ -70,7 +70,7 @@ func LoadMonthAssignments(
 	requiredHeaders := []string{"Date", "Time", "Sport"}
 	for index, expectedHeader := range requiredHeaders {
 		if headers[index] != expectedHeader {
-			log.Printf("Unexpected headers in month %s.  Expected %s, found %s.", month, expectedHeader, headers[0]))
+			log.Printf("Unexpected headers in month %s.  Expected %s, found %s.", month, expectedHeader, headers[0])
 		}
 	}
 
