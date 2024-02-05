@@ -88,6 +88,22 @@ number of people scheduled for Roles who do not show up in the Workers Contact I
 This would need to be updated.  Estimated to need about 30 minutes of someone's time.
 
 # Running the Code
+## Configuration
+
+You must specify the following parameters:
+* calendarId - The calendar ID of the Google calendar we want to synchronize.
+This can be found on the properties of the calendar.
+For the primary calendar of a user, specify "primary".
+* spreadsheetId - The Google spreadsheet ID.  This is contained within the URL of the spreadsheet when viewing as a user.
+
+These values can be specified in a config.yaml file.  See the 
+supplied config_sample.yaml file for the format.
+
+You can also override the config.yaml values by specifying
+environment values instead:
+* CALENDAR_ID
+* SPREADSHEET_ID
+
 ## Credentials
 In order to run the code you must first get a credentials.json file in the current directory.
 Follow the steps at the [Quickstart](https://developers.google.com/sheets/api/quickstart/go)
