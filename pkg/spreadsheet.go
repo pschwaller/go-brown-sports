@@ -112,7 +112,7 @@ func buildSingleEvent(
 	sportingEvent.Sport = event[sportColumnNumber].(string)
 
 	if len(headers) != len(event) {
-		fmt.Printf("No MATCH: %s\n", event)
+		log.Printf("No MATCH: %s\n", event)
 	}
 
 	for index, eventEntry := range event {
@@ -155,7 +155,7 @@ func resolveDatetime(dateString string, timeString string) time.Time {
 	datetime, err := time.ParseInLocation("Monday, January 2, 2006 3:04pm", datetimeString, eastern)
 
 	if err != nil {
-		fmt.Printf("Error formatting date %s: %v\n", datetimeString, err)
+		log.Printf("Error formatting date %s: %v\n", datetimeString, err)
 	}
 
 	return datetime
@@ -177,7 +177,7 @@ func loadNameToEmailMap(srv *sheets.Service, spreadsheetID string) map[string]st
 				// So we put them into the map by first name as well as by full name.
 				firstName := strings.Split(name, " ")[0]
 				if nameToEmailMap[firstName] != "" {
-					fmt.Printf("Duplicate entry for %s\n", firstName)
+					log.Printf("Duplicate entry for %s\n", firstName)
 				}
 
 				nameToEmailMap[firstName] = email

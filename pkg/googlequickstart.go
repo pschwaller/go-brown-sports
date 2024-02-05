@@ -34,7 +34,7 @@ func GetClient(config *oauth2.Config) *http.Client {
 // SaveToken Saves a token to a file path.
 // This function originated at the Google quickstart for the Go sheets API.
 func SaveToken(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
+	log.Printf("Saving credential file to: %s\n", path)
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func SaveToken(path string, token *oauth2.Token) {
 // This function originated at the Google quickstart for the Go sheets API.
 func GetTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
+	log.Printf("Go to the following link in your browser then type the "+
 		"authorization code ('code=' contained within the generated URL): \n%v\n", authURL)
 
 	var authCode string

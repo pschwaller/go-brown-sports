@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	mapset "github.com/deckarep/golang-set"
 	"google.golang.org/api/calendar/v3"
 	"google.golang.org/api/option"
@@ -64,7 +63,7 @@ func synchronizeCalendar(
 		err = pkg.CreateCalendarEvent(calendarService, pkg.GetCalendarID(), sportingEvent)
 
 		if err != nil {
-			fmt.Printf("Error creating calendar event for %s: %v", key, err)
+			log.Printf("Error creating calendar event for %s: %v", key, err)
 		}
 	}
 
@@ -74,7 +73,7 @@ func synchronizeCalendar(
 		err = calendarService.Events.Delete(pkg.GetCalendarID(), eventID).Do()
 
 		if err != nil {
-			fmt.Printf("Error deleting %s: %v", key.(string), err)
+			log.Printf("Error deleting %s: %v", key.(string), err)
 		}
 	}
 
@@ -91,12 +90,12 @@ func synchronizeCalendar(
 		err = pkg.UpdateCalendarEvent(calendarService, pkg.GetCalendarID(), eventID, spreadsheetFutureEvents[keyString])
 
 		if err != nil {
-			fmt.Printf("Error updating %s: %v", keyString, err)
+			log.Printf("Error updating %s: %v", keyString, err)
 		}
 		updateCount++
 	}
 
-	fmt.Printf(
+	log.Printf(
 		"Missing: %d, Extra: %d, Updated: %d\n",
 		missingInCalendar.Cardinality(),
 		extraInCalendar.Cardinality(),
